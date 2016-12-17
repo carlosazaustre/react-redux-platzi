@@ -1,0 +1,47 @@
+{
+  "name": "react-redux-platzi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf ./build",
+    "build": "webpack -w",
+    "bff": "nodemon ./build/server",
+    "sfs": "serve ./build/statics --port 3001 --cache 0"
+  },
+  "keywords": [],
+  "author": "Carlos Azaustre (https://carlosazaustre.es/blog)",
+  "license": "MIT",
+  "dependencies": {
+    "isomorphic-fetch": "^2.2.1",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
+    "react-intl": "^2.1.5",
+    "react-router": "^4.0.0-alpha.6"
+  },
+  "devDependencies": {
+    "babel-core": "^6.20.0",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
+    "babel-preset-es2016": "^6.16.0",
+    "babel-preset-es2017": "^6.16.0",
+    "babel-preset-latest-minimal": "^1.1.2",
+    "babel-preset-react": "^6.16.0",
+    "css-loader": "^0.26.1",
+    "eslint": "^3.12.2",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-import": "^2.1.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.6.0",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "json-loader": "^0.5.4",
+    "nodemon": "^1.11.0",
+    "npm-run-all": "^3.1.2",
+    "rimraf": "^2.5.4",
+    "serve": "^2.0.0",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.14.0"
+  }
+}
