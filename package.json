@@ -1,7 +1,7 @@
 {
   "name": "react-redux-platzi",
   "version": "1.0.0",
-  "description": "",
+  "description": "Project of React & Redux Course on Platzi",
   "main": "./build/server/index.js",
   "scripts": {
     "clean": "rimraf ./build",
@@ -9,11 +9,16 @@
     "bff": "nodemon ./build/server",
     "sfs": "serve ./build/statics --port 3001 --cache 0",
     "watch": "webpack -w",
-    "start": "node ./build/server/index.js",
-    "deploy": "now ./build/statics",
-    "deploy:sfs": ""
+    "start": "node ./build/server/index.js"
   },
-  "keywords": [],
+  "keywords": [
+    "react",
+    "redux",
+    "immutable",
+    "redux-thunk",
+    "platzi",
+    "learning"
+  ],
   "author": "Carlos Azaustre (https://carlosazaustre.es/blog)",
   "license": "MIT",
   "dependencies": {
