@@ -48,7 +48,7 @@ const config = {
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style', 'css?modules'),
+        loader: 'css-loader/locals?modules',
       },
     ],
   },

@@ -3,20 +3,17 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import API from '../../api';
 import Post from '../../posts/containers/Post';
 import Loading from '../../shared/components/Loading';
 import Title from '../../shared/components/Title';
 
-import actions from '../../actions';
+import * as actions from '../../actions';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      page: props.page || 1,
-      posts: props.posts || [],
       loading: true,
     };
 
@@ -34,13 +31,6 @@ class Home extends React.Component {
 
   async initialFetch() {
     await this.props.actions.postsNextPage();
-    // const posts = await API.posts.getList(this.props.page);
-
-    // this.props.actions.setPost(posts);
-    // // this.props.dispatch(
-    // //   actions.setPost(posts),
-    // // );
-
     this.setState({ loading: false });
   }
 
@@ -58,13 +48,6 @@ class Home extends React.Component {
     return this.setState({ loading: true }, async () => {
       try {
         await this.props.actions.postsNextPage();
-        // const posts = await API.posts.getList(this.props.page);
-
-        // this.props.actions.setPost(posts);
-        // // this.props.dispatch(
-        // //   actions.setPost(posts),
-        // // );
-
         this.setState({ loading: false });
       } catch (error) {
         console.error(error);
@@ -81,9 +64,10 @@ class Home extends React.Component {
         </Title>
 
         <section>
-          {this.props.posts.map(post => (
-            <Post key={post.id} {...post} />
-          ))}
+          {this.props.posts
+            .map(post => <Post key={post.get('id')} {...post.toJS()} />)
+            .toArray()
+          }
           {this.state.loading && (
             <Loading />
           )}
@@ -96,14 +80,17 @@ class Home extends React.Component {
 
 Home.propTypes = {
   actions: PropTypes.objectOf(PropTypes.func),
-  posts: PropTypes.arrayOf(PropTypes.object),
-  page: PropTypes.number,
+  posts: PropTypes.shape({
+    map: PropTypes.func,
+    get: PropTypes.func,
+    size: PropTypes.number,
+  }),
 };
 
 function mapStateToProps(state) {
   return {
-    posts: state.posts.entities,
-    page: state.posts.page,
+    posts: state.get('posts').get('entities'),
+    page: state.get('posts').get('page'),
   };
 }
 

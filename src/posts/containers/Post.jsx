@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import actions from '../../actions';
+import * as actions from '../../actions';
 import styles from './Post.css';
 
 class Post extends React.Component {
@@ -21,8 +21,9 @@ class Post extends React.Component {
   }
 
   async initialFetch() {
-    if (!!this.props.user && !!this.props.comments) return this.setState({ loading: false });
-
+    if (this.props.user && !!this.props.comments.size > 0) {
+      return this.setState({ loading: false });
+    }
 
     await Promise.all([
       this.props.actions.loadUser(this.props.userId),
@@ -45,14 +46,14 @@ class Post extends React.Component {
         </p>
         {!this.state.loading && (
           <div className={styles.meta}>
-            <Link to={`/user/${this.props.user.id}`} className={styles.user}>
-              {this.props.user.name}
+            <Link to={`/user/${this.props.user.get('id')}`} className={styles.user}>
+              {this.props.user.get('name')}
             </Link>
             <span className={styles.comments}>
               <FormattedMessage
                 id="post.meta.comments"
                 values={{
-                  amount: this.props.comments.length,
+                  amount: this.props.comments.size,
                 }}
               />
             </span>
@@ -68,21 +69,21 @@ class Post extends React.Component {
 
 Post.propTypes = {
   id: PropTypes.number,
-  userId: PropTypes.number,
   title: PropTypes.string,
   body: PropTypes.string,
   user: PropTypes.shape({
-    id: PropTypes.number,
-    name: PropTypes.string,
+    size: PropTypes.number,
+    get: PropTypes.func,
   }),
-  comments: PropTypes.arrayOf(PropTypes.object),
-  actions: PropTypes.objectOf(PropTypes.func),
+  comments: PropTypes.shape({
+    size: PropTypes.number,
+  }),
 };
 
 function mapStateToProps(state, props) {
   return {
-    comments: state.comments.filter(comment => comment.postId === props.id),
-    user: state.users[props.userId],
+    comments: state.get('comments').filter(comment => comment.get('postId') === props.id),
+    user: state.get('users').get(props.userId),
   };
 }
 
