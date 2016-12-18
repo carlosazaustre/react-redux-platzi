@@ -32,6 +32,9 @@
     margin: .25em 0s;
   }
 }
+._1p5lzemUTXj1VQOh9iOVCB {
+  border-bottom: 2px solid #000;
+}
 ._3d2jdr-w1CaUQKJBWh2bsv {
   background: linear-gradient(90deg, #1c3643 0, #273b46 25%, #1e5372);
 }
@@ -80,10 +83,8 @@
   color: #000;
   transform: scale(1.01);
 }
-._1p5lzemUTXj1VQOh9iOVCB {
-  border-bottom: 2px solid #000;
-}
 ._27gZpbl1Lfj8vgnPXps0Jn {
   max-width: 1024px;
   margin: 0 auto;
+  padding: 0 2em; 
 }

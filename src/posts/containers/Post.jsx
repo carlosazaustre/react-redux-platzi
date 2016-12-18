@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import API from '../../api';
+import actions from '../../actions';
 import styles from './Post.css';
 
 class Post extends React.Component {
@@ -11,8 +13,6 @@ class Post extends React.Component {
 
     this.state = {
       loading: true,
-      user: props.user || null,
-      comments: props.comments || null,
     };
   }
 
@@ -21,18 +21,15 @@ class Post extends React.Component {
   }
 
   async initialFetch() {
-    if (!!this.state.user && !!this.state.comments) return this.setState({ loading: false });
+    if (!!this.props.user && !!this.props.comments) return this.setState({ loading: false });
 
-    const [user, comments] = await Promise.all([
-      !this.state.user ? API.users.getSingle(this.props.userId) : Promise.resolve(null),
-      !this.state.comments ? API.posts.getComments(this.props.id) : Promise.resolve(null),
+
+    await Promise.all([
+      this.props.actions.loadUser(this.props.userId),
+      this.props.actions.loadCommentsForPost(this.props.id),
     ]);
 
-    return this.setState({
-      user: user || this.state.user,
-      comments: comments || this.state.comments,
-      loading: false,
-    });
+    return this.setState({ loading: false });
   }
 
   render() {
@@ -48,14 +45,14 @@ class Post extends React.Component {
         </p>
         {!this.state.loading && (
           <div className={styles.meta}>
-            <Link to={`/user/${this.state.user.id}`} className={styles.user}>
-              {this.state.user.name}
+            <Link to={`/user/${this.props.user.id}`} className={styles.user}>
+              {this.props.user.name}
             </Link>
             <span className={styles.comments}>
               <FormattedMessage
                 id="post.meta.comments"
                 values={{
-                  amount: this.state.comments.length,
+                  amount: this.props.comments.length,
                 }}
               />
             </span>
@@ -75,11 +72,24 @@ Post.propTypes = {
   title: PropTypes.string,
   body: PropTypes.string,
   user: PropTypes.shape({
+    id: PropTypes.number,
     name: PropTypes.string,
   }),
-  comments: PropTypes.arrayOf(
-    PropTypes.object,
-  ),
+  comments: PropTypes.arrayOf(PropTypes.object),
+  actions: PropTypes.objectOf(PropTypes.func),
 };
 
-export default Post;
+function mapStateToProps(state, props) {
+  return {
+    comments: state.comments.filter(comment => comment.postId === props.id),
+    user: state.users[props.userId],
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Post);

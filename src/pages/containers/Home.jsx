@@ -1,19 +1,22 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import API from '../../api';
 import Post from '../../posts/containers/Post';
 import Loading from '../../shared/components/Loading';
-import Header from '../../shared/components/Header';
 import Title from '../../shared/components/Title';
+
+import actions from '../../actions';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      page: 1,
-      posts: [],
+      page: props.page || 1,
+      posts: props.posts || [],
       loading: true,
     };
 
@@ -30,13 +33,15 @@ class Home extends React.Component {
   }
 
   async initialFetch() {
-    const posts = await API.posts.getList(this.state.page);
+    await this.props.actions.postsNextPage();
+    // const posts = await API.posts.getList(this.props.page);
 
-    this.setState({
-      posts,
-      page: this.state.page + 1,
-      loading: false,
-    });
+    // this.props.actions.setPost(posts);
+    // // this.props.dispatch(
+    // //   actions.setPost(posts),
+    // // );
+
+    this.setState({ loading: false });
   }
 
   handleScroll() {
@@ -52,13 +57,15 @@ class Home extends React.Component {
 
     return this.setState({ loading: true }, async () => {
       try {
-        const posts = await API.posts.getList(this.state.page);
+        await this.props.actions.postsNextPage();
+        // const posts = await API.posts.getList(this.props.page);
 
-        this.setState({
-          posts: this.state.posts.concat(posts),
-          page: this.state.page + 1,
-          loading: false,
-        });
+        // this.props.actions.setPost(posts);
+        // // this.props.dispatch(
+        // //   actions.setPost(posts),
+        // // );
+
+        this.setState({ loading: false });
       } catch (error) {
         console.error(error);
         this.setState({ loading: false });
@@ -69,13 +76,12 @@ class Home extends React.Component {
   render() {
     return (
       <section name="home">
-        <Header />
         <Title>
           <FormattedMessage id="title.home" />
         </Title>
 
         <section>
-          {this.state.posts.map(post => (
+          {this.props.posts.map(post => (
             <Post key={post.id} {...post} />
           ))}
           {this.state.loading && (
@@ -88,4 +94,23 @@ class Home extends React.Component {
   }
 }
 
-export default Home;
+Home.propTypes = {
+  actions: PropTypes.objectOf(PropTypes.func),
+  posts: PropTypes.arrayOf(PropTypes.object),
+  page: PropTypes.number,
+};
+
+function mapStateToProps(state) {
+  return {
+    posts: state.posts.entities,
+    page: state.posts.page,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
