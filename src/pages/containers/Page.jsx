@@ -7,6 +7,7 @@ import {
 import Home from './Home';
 import Post from './Post';
 import Profile from './Profile';
+import Gallery from './Gallery';
 import Error404 from './Error404';
 import Header from '../../shared/components/Header';
 import styles from './Page.css';
@@ -17,6 +18,7 @@ function Pages() {
       <Header />
       <Match exactly pattern="/" component={Home} />
       <Match exactly pattern="/post/:id" component={Post} />
+      <Match exactly pattern="/gallery" component={Gallery} />
       <Match exactly pattern="/user/:id" component={Profile} />
       <Miss component={Error404} />
     </main>
